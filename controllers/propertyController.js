@@ -1,12 +1,13 @@
-const Property = require("../models/Property");
-
 const createProperty = async (req, res) => {
-  const { name, location } = req.body;
+  const { name, location, type, state, propertyId } = req.body;
 
   try {
     const newProperty = new Property({
       name,
       location,
+      type,
+      state,
+      propertyId,
       createdBy: req.user._id,
     });
 
@@ -20,15 +21,3 @@ const createProperty = async (req, res) => {
     res.status(500).json({ message: "Failed to create property" });
   }
 };
-
-const getProperties = async (req, res) => {
-  try {
-    const properties = await Property.find().populate("createdBy", "name role");
-    res.status(200).json(properties);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to fetch properties" });
-  }
-};
-
-module.exports = { createProperty, getProperties };

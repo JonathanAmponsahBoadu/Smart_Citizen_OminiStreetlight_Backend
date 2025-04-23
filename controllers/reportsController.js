@@ -22,8 +22,8 @@ const createReport = async (req, res) => {
     const newReport = new Report({
       propertyId,
       description,
-      media,
       reportId,
+      mediaUrl: media,
     });
 
     await newReport.save();
