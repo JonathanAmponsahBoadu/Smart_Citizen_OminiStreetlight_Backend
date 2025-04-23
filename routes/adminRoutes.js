@@ -4,6 +4,6 @@ const authorizedRoles = require("../middlewares/authorizedRoles");
 const createAccount = require("../controllers/adminController");
 const createAccount = require("../controllers/adminController");
 
-Router.post("/admin-create", authorizedRoles("admin"), createAccount);
+Router.post("/users", authorizedRoles("admin"), createAccount);
 
 module.exports = Router;

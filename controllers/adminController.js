@@ -1,4 +1,4 @@
-const User = require("../modules/User");
+const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
 const createAccount = async (req, res) => {
