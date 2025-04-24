@@ -1,3 +1,6 @@
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsdoc = require("swagger-jsdoc");
+
 const express = require("express");
 const connectDB = require("./Lib/db");
 const adminRoutes = require("./routes/adminRoutes");
@@ -8,6 +11,27 @@ const taskRoutes = require("./routes/taskRoutes");
 const app = express();
 require("dotenv").config();
 const port = process.env.PORT || 5000;
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Smart Citizen Platform API",
+      version: "1.0.0",
+      description: "API documentation for the Smart Citizen backend",
+    },
+    servers: [
+      {
+        url: "http://localhost:5000",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 connectDB();
 
