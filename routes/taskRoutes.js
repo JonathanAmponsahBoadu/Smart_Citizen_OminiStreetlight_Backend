@@ -7,19 +7,23 @@ const {
   getTaskById,
   addTaskComment,
 } = require("../controllers/taskController");
-const authorizeRoles = require("../middleware/authorizeRoles");
+const authorizedRoles = require("../middleware/authorizeRoles");
 
-router.post("/tasks/assign", authorizeRoles("supervisor"), assignTask);
-router.patch("/tasks/:id/status", authorizeRoles("engineer"), updateTaskStatus);
-router.get("/tasks", authorizeRoles("admin", "supervisor"), getAllTasks);
+router.post("/tasks/assign", authorizedRoles("supervisor"), assignTask);
+router.patch(
+  "/tasks/:id/status",
+  authorizedRoles("engineer"),
+  updateTaskStatus
+);
+router.get("/tasks", authorizedRoles("admin", "supervisor"), getAllTasks);
 router.get(
   "tasks/:id/task",
-  aurthorizedRoles("admin", "supervisor"),
+  authorizedRoles("admin", "supervisor"),
   getTaskById
 );
 router.post(
   "/api/tasks/:id/comment",
-  authorizeRoles("supervisor", "engineer"),
+  authorizedRoles("supervisor", "engineer"),
   addTaskComment
 );
 module.exports = router;
