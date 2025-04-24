@@ -2,15 +2,19 @@ const express = require("express");
 const router = express.Router();
 const {
   createProperty,
-  getProperties,
+  getAllProperties,
 } = require("../controllers/propertyController");
-const authorizeRoles = require("../middleware/authorizeRoles");
+const authorizedRoles = require("../middlewares/authorizedRoles");
 
-router.get("/properties", authorizeRoles("admin", "supervisor"), getProperties);
+router.get(
+  "/properties",
+  authorizedRoles("admin", "supervisor"),
+  getAllProperties
+);
 
 router.post(
   "/properties",
-  authorizeRoles("admin", "supervisor"),
+  authorizedRoles("admin", "supervisor"),
   createProperty
 );
 

@@ -7,7 +7,7 @@ const {
   getTaskById,
   addTaskComment,
 } = require("../controllers/taskController");
-const authorizedRoles = require("../middleware/authorizeRoles");
+const authorizedRoles = require("../middlewares/authorizedRoles");
 
 router.post("/tasks/assign", authorizedRoles("supervisor"), assignTask);
 router.patch(

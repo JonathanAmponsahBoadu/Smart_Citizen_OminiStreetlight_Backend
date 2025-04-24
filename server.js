@@ -1,7 +1,6 @@
 const express = require("express");
 const connectDB = require("./Lib/db");
 const adminRoutes = require("./routes/adminRoutes");
-const publicRoutes = require("./routes/publicRoutes");
 const propertyRoutes = require("./routes/propertyRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const taskRoutes = require("./routes/taskRoutes");
