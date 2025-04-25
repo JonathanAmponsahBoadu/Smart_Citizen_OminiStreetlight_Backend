@@ -20,18 +20,26 @@ const createAccount = require("../controllers/adminController");
  *             required:
  *               - fullName
  *               - email
- *               - password
+ *               - phoneNumber
  *               - role
+ *               - passwordHash
+ *               - createdAt
  *             properties:
  *               fullName:
  *                 type: string
  *               email:
  *                 type: string
- *               password:
- *                 type: string
+ *               phoneNumber:
+ *                 type: string 
  *               role:
  *                 type: string
  *                 enum: [supervisor, engineer]
+ *               passwordHash:
+ *                 type: string
+ *               createdAt:
+ *                 type: string
+ *                 format: date-time
+
  *     responses:
  *       201:
  *         description: User account created successfully.

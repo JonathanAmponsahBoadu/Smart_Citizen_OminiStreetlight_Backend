@@ -31,6 +31,8 @@ const authorizedRoles = require("../middlewares/authorizedRoles");
  *               type: string
  *             engineerId:
  *               type: string
+ *             assignedby:
+ *               type: string
  *     responses:
  *       201:
  *         description: Task successfully assigned.
@@ -162,6 +164,8 @@ router.get(
  *           type: object
  *           properties:
  *             text:
+ *               type: string
+ *             userId:
  *               type: string
  *     responses:
  *       201:
