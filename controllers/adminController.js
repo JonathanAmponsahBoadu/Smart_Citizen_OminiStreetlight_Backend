@@ -2,8 +2,9 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
 const createAccount = async (req, res) => {
-  const { fullName, email, phoneNumber, role, passwordHash, createdAt } =
-    req.body;
+  const { fullName, email, phoneNumber, role, password, createdAt } = req.body;
+
+  const passwordHash = await bcrypt.hash(password, 10);
 
   if (!["admin", "supervisor", "engineer"].includes(role)) {
     return res.status(400).json({ message: "Invalid role" });
