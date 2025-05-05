@@ -6,33 +6,38 @@ const {
   getAllTasks,
   getTaskById,
   addTaskComment,
+  deleteTask,
 } = require("../controllers/taskController");
 const authorizedRoles = require("../middlewares/authorizedRoles");
+const authenticate = require("../middlewares/authMiddleware");
 
 /**
  * @swagger
- * /tasks/assign:
+ * /api/tasks/assign:
  *   post:
  *     summary: Assign a task to an engineer
  *     description: Only a supervisor can assign a task to an engineer.
  *     tags:
  *       - Tasks
- *     parameters:
- *       - in: body
- *         name: task
- *         description: The task details to assign.
- *         required: true
- *         schema:
- *           type: object
- *           properties:
- *             reportId:
- *               type: string
- *             propertyId:
- *               type: string
- *             engineerId:
- *               type: string
- *             assignedby:
- *               type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reportId:
+ *                 type: string
+ *                 description: The ID of the report related to the task.
+ *               propertyId:
+ *                 type: string
+ *                 description: The ID of the property related to the task.
+ *               engineerId:
+ *                 type: string
+ *                 description: The ID of the engineer to whom the task is assigned.
+ *               assignedBy:
+ *                 type: string
+ *                 description: The ID of the supervisor assigning the task.
  *     responses:
  *       201:
  *         description: Task successfully assigned.
@@ -43,11 +48,16 @@ const authorizedRoles = require("../middlewares/authorizedRoles");
  *       500:
  *         description: Internal Server Error.
  */
-router.post("/tasks/assign", authorizedRoles("supervisor"), assignTask);
+router.post(
+  "/tasks/assign",
+  authenticate,
+  authorizedRoles("supervisor"),
+  assignTask
+);
 
 /**
  * @swagger
- * /tasks/{id}/status:
+ * /api/tasks/{id}:
  *   patch:
  *     summary: Update the status of a task
  *     description: Only an engineer can update the status of a task they are assigned to.
@@ -58,17 +68,19 @@ router.post("/tasks/assign", authorizedRoles("supervisor"), assignTask);
  *         name: id
  *         required: true
  *         description: The ID of the task.
- *         type: string
- *       - in: body
- *         name: status
- *         description: The new status of the task.
- *         required: true
  *         schema:
- *           type: object
- *           properties:
- *             status:
- *               type: string
- *               enum: [pending, in_progress, fixed, cannot_fix]
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [pending, in_progress, fixed, cannot_fix]
+ *                 description: The new status of the task.
  *     responses:
  *       200:
  *         description: Task status updated.
@@ -80,14 +92,15 @@ router.post("/tasks/assign", authorizedRoles("supervisor"), assignTask);
  *         description: Internal Server Error.
  */
 router.patch(
-  "/tasks/:id/status",
+  "/tasks/:id",
+  authenticate,
   authorizedRoles("engineer"),
   updateTaskStatus
 );
 
 /**
  * @swagger
- * /tasks:
+ * /api/tasks:
  *   get:
  *     summary: Get all tasks
  *     description: Get all tasks for admin or supervisor, with optional filters.
@@ -112,11 +125,16 @@ router.patch(
  *       500:
  *         description: Internal Server Error.
  */
-router.get("/tasks", authorizedRoles("admin", "supervisor"), getAllTasks);
+router.get(
+  "/tasks",
+  authenticate,
+  authorizedRoles("admin", "supervisor"),
+  getAllTasks
+);
 
 /**
  * @swagger
- * /tasks/{id}/task:
+ * /api/tasks/{id}/task:
  *   get:
  *     summary: Get a specific task by ID
  *     description: Get detailed information about a task by its ID.
@@ -138,13 +156,14 @@ router.get("/tasks", authorizedRoles("admin", "supervisor"), getAllTasks);
  */
 router.get(
   "/tasks/:id/task",
+  authenticate,
   authorizedRoles("admin", "supervisor"),
   getTaskById
 );
 
 /**
  * @swagger
- * /tasks/{id}/comment:
+ * /api/tasks/{id}/comment:
  *   post:
  *     summary: Add a comment to a task
  *     description: Both engineers and supervisors can add comments to tasks.
@@ -155,18 +174,21 @@ router.get(
  *         name: id
  *         required: true
  *         description: The ID of the task to comment on.
- *         type: string
- *       - in: body
- *         name: comment
- *         description: The comment text.
- *         required: true
  *         schema:
- *           type: object
- *           properties:
- *             text:
- *               type: string
- *             userId:
- *               type: string
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 description: The comment text.
+ *               userId:
+ *                 type: string
+ *                 description: The ID of the user adding the comment.
  *     responses:
  *       201:
  *         description: Comment added successfully.
@@ -178,9 +200,43 @@ router.get(
  *         description: Internal Server Error.
  */
 router.post(
-  "/api/tasks/:id/comment",
+  "/tasks/:id/comment",
+  authenticate,
   authorizedRoles("supervisor", "engineer"),
   addTaskComment
 );
 
+/**
+ * @swagger
+ * /api/tasks/{id}:
+ *   delete:
+ *     summary: Delete a task
+ *     description: Supervisors can delete a task by its ID.
+ *     tags:
+ *       - Tasks
+ *     security:
+ *       - BearerAuth: [] # Requires authentication
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the task to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Task deleted successfully.
+ *       404:
+ *         description: Task not found.
+ *       401:
+ *         description: Unauthorized. Only supervisors can delete tasks.
+ *       500:
+ *         description: Internal Server Error.
+ */
+router.delete(
+  "/tasks/:id",
+  authenticate,
+  authorizedRoles("supervisor"),
+  deleteTask
+);
 module.exports = router;

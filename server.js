@@ -1,15 +1,19 @@
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
-
 const express = require("express");
 const connectDB = require("./Lib/db");
 const adminRoutes = require("./routes/adminRoutes");
 const propertyRoutes = require("./routes/propertyRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const taskRoutes = require("./routes/taskRoutes");
-
+const authRoutes = require("./routes/authRoutes");
+const User = require("./models/User");
+const bcrypt = require("bcrypt");
 const app = express();
 require("dotenv").config();
+const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || "admin@example.com";
+const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || "admin123";
+
 const port = process.env.PORT || 5000;
 
 const swaggerOptions = {
@@ -25,15 +29,63 @@ const swaggerOptions = {
         url: "http://localhost:5000",
       },
     ],
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT", // Optional, but helps indicate the token format
+        },
+      },
+    },
+    security: [
+      {
+        BearerAuth: [], // Apply BearerAuth globally to all endpoints
+      },
+    ],
   },
-  apis: ["./routes/*.js"],
+  apis: ["./routes/*.js"], // Path to your route files
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-connectDB();
+const createDefaultAdmin = async () => {
+  try {
+    const existingUsers = await User.find();
+    if (existingUsers.length === 0) {
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
+      console.log(hashedPassword);
+      const admin = new User({
+        fullName: "Default Admin",
+        email: adminEmail,
+        phoneNumber: "1234567890",
+        role: "admin",
+        passwordHash: hashedPassword,
+        createdAt: new Date(),
+      });
+      await admin.save();
+      console.log(
+        "Default admin user created with email: admin@example.com and password: admin123"
+      );
+      console.log(hashedPassword);
+    } else {
+      console.log(
+        "Users already exist in the database. Skipping default admin creation."
+      );
+    }
+  } catch (err) {
+    console.error("Error creating default admin user:", err);
+  }
+};
+
+connectDB().then(() => {
+  createDefaultAdmin();
+  app.listen(port, () => {
+    console.log(`Running on http://localhost:${port}`);
+  });
+});
 
 app.use(express.json());
 
@@ -41,7 +93,4 @@ app.use("/api", propertyRoutes);
 app.use("/api", adminRoutes);
 app.use("/api", reportRoutes);
 app.use("/api", taskRoutes);
-
-app.listen(port, () => {
-  console.log(`Running on http://localhost:${port}`);
-});
+app.use("/api", authRoutes);

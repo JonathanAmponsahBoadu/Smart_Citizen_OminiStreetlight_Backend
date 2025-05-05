@@ -1,16 +1,22 @@
 const express = require("express");
 const Router = express.Router();
 const authorizedRoles = require("../middlewares/authorizedRoles");
-const createAccount = require("../controllers/adminController");
+const {
+  createAccount,
+  deleteAccount,
+} = require("../controllers/adminController");
+const authenticate = require("../middlewares/authMiddleware");
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   post:
  *     summary: Create a new user account
  *     description: Only admins can create new user accounts (e.g., supervisors, engineers).
  *     tags:
  *       - Users
+ *     security:
+ *       - BearerAuth: [] # Add this line to secure the endpoint
  *     requestBody:
  *       required: true
  *       content:
@@ -22,24 +28,19 @@ const createAccount = require("../controllers/adminController");
  *               - email
  *               - phoneNumber
  *               - role
- *               - passwordHash
- *               - createdAt
+ *               - password
  *             properties:
  *               fullName:
  *                 type: string
  *               email:
  *                 type: string
  *               phoneNumber:
- *                 type: string 
+ *                 type: string
  *               role:
  *                 type: string
  *                 enum: [supervisor, engineer]
- *               passwordHash:
+ *               password:
  *                 type: string
- *               createdAt:
- *                 type: string
- *                 format: date-time
-
  *     responses:
  *       201:
  *         description: User account created successfully.
@@ -53,6 +54,39 @@ const createAccount = require("../controllers/adminController");
  *         description: Internal Server Error.
  */
 
-Router.post("/users", authorizedRoles("admin"), createAccount);
+Router.post("/users", authenticate, authorizedRoles("admin"), createAccount);
 
+/**
+ * @swagger
+ * /api/users:
+ *   delete:
+ *     summary: Delete a user account
+ *     description: Only admins can delete user accounts. Admin accounts cannot be deleted.
+ *     tags:
+ *       - Users
+ *     security:
+ *       - BearerAuth: [] # Requires authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The email of the user account to delete.
+ *     responses:
+ *       200:
+ *         description: Account deleted successfully.
+ *       401:
+ *         description: Unauthorized. Admin accounts cannot be deleted.
+ *       404:
+ *         description: Account not found.
+ *       500:
+ *         description: Internal Server Error.
+ */
+Router.delete("/users", authenticate, authorizedRoles("admin"), deleteAccount);
 module.exports = Router;

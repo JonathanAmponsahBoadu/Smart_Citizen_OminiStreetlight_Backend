@@ -132,10 +132,25 @@ const addTaskComment = async (req, res) => {
   }
 };
 
+const deleteTask = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedTask = await Task.findByIdAndDelete(id);
+    if (!deletedTask) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    return res.status(200).json({ message: "Deleted successfully" });
+  } catch (err) {
+    console.log(`Deleting task failed ${err}`);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   assignTask,
   updateTaskStatus,
   getAllTasks,
   getTaskById,
   addTaskComment,
+  deleteTask,
 };
