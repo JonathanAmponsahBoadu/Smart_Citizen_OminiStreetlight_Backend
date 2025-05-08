@@ -25,7 +25,10 @@ const createProperty = async (req, res) => {
     const newProperty = new Property({
       propertyId,
       type,
-      location: { address, coordinates: { lat: lat, lng: lng } },
+      location: {
+        address,
+        coordinates: { lat: lat, lng: lng },
+      },
       state,
     });
 

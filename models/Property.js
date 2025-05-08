@@ -1,21 +1,20 @@
 const mongoose = require("mongoose");
 
-const propertySchema = new mongoose.Schema({
-  propertyId: { type: String, unique: true },
-  type: { type: String, enum: ["streetlight", "road", "pipe", "bridge"] },
-  location: {
-    address: String,
-    coordinates: {
-      lat: Number,
-      lng: Number,
+const propertySchema = new mongoose.Schema(
+  {
+    propertyId: { type: String, required: true, unique: true },
+    type: { type: String, required: true },
+    location: {
+      address: { type: String, required: true },
+      coordinates: {
+        lat: { type: Number, required: true },
+        lng: { type: Number, required: true },
+      },
     },
+    state: { type: String, required: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
-  state: {
-    type: String,
-    enum: ["working", "damaged", "under_repair", "fixed", "pending"],
-  },
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  createdAt: { type: Date, default: Date.now },
-});
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Property", propertySchema);

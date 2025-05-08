@@ -38,6 +38,20 @@ const createAccount = async (req, res) => {
   }
 };
 
+const getAccount = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const Account = await User.findOne(id);
+    if (!Account) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+    return res.status(200).json({ Account });
+  } catch (err) {
+    console.log(`Error finding account ${err}`);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 const deleteAccount = async (req, res) => {
   const { email } = req.body;
   try {
@@ -60,4 +74,17 @@ const deleteAccount = async (req, res) => {
   }
 };
 
-module.exports = { createAccount, deleteAccount };
+const getAllAccounts = async (req, res) => {
+  try {
+    const accounts = await User.find();
+    if (!accounts || accounts.length === 0) {
+      return res.status(404).json({ message: "No accounts found" });
+    }
+    return res.status(200).json({ accounts });
+  } catch (err) {
+    console.log(`Error fetching accounts: ${err}`);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports = { createAccount, getAccount, getAllAccounts, deleteAccount };
