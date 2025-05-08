@@ -14,7 +14,7 @@ const authenticate = require("../middlewares/authMiddleware");
  *     summary: Create a new user account
  *     description: Only admins can create new user accounts (e.g., supervisors, engineers).
  *     tags:
- *       - Users
+ *       - Admin
  *     security:
  *       - BearerAuth: [] # Add this line to secure the endpoint
  *     requestBody:
@@ -63,7 +63,7 @@ Router.post("/users", authenticate, authorizedRoles("admin"), createAccount);
  *     summary: Delete a user account
  *     description: Only admins can delete user accounts. Admin accounts cannot be deleted.
  *     tags:
- *       - Users
+ *       - Admin
  *     security:
  *       - BearerAuth: [] # Requires authentication
  *     requestBody:
