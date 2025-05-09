@@ -14,22 +14,21 @@ const getAllProperties = async (req, res) => {
 };
 
 const createProperty = async (req, res) => {
+  const { propertyId, type, address, lat, lng, state } = req.body;
   try {
-    const { propertyId, type, address, lat, lng, state } = req.body;
-
     const existingProperty = await Property.findOne({ propertyId });
     if (existingProperty) {
       return res.status(409).json({ message: "Property already exists" });
     }
 
     const newProperty = new Property({
-      propertyId,
-      type,
+      propertyId: propertyId,
+      type: type,
       location: {
-        address,
+        address: address,
         coordinates: { lat: lat, lng: lng },
       },
-      state,
+      state: state,
     });
 
     await newProperty.save();
@@ -48,15 +47,16 @@ const createProperty = async (req, res) => {
 };
 
 const deleteProperty = async (req, res) => {
+  const { propertyId } = req.params;
   try {
-    const { propertyId } = req.params;
-
     const deletedProperty = await Property.findOneAndDelete({ propertyId });
-    if (!deletedProperty) {
-      return res.status(404).json({ message: "Property not found" });
+    if (!propertyId) {
+      return res.status(400).json({ message: "Property ID is required" });
     }
 
-    return res.status(200).json({ message: "Property deleted successfully" });
+    return res.status(200).json({
+      message: "Property deleted successfully",
+    });
   } catch (err) {
     console.error(`Error deleting property: ${err}`);
     return res.status(500).json({ message: "Failed to delete property" });
@@ -64,10 +64,9 @@ const deleteProperty = async (req, res) => {
 };
 
 const updatePropertyStatus = async (req, res) => {
+  const { propertyId } = req.params;
+  const { state } = req.body;
   try {
-    const { propertyId } = req.params;
-    const { state } = req.body;
-
     const validStates = [
       "working",
       "damaged",

@@ -22,7 +22,7 @@ const assignTask = async (req, res) => {
 
     await task.save();
 
-    res.status(201).json({
+    res.status(200).json({
       message: "Task assigned successfully",
       taskId: task._id,
     });
