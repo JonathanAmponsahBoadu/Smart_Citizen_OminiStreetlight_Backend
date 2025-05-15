@@ -64,7 +64,6 @@ const getAllReports = async (req, res) => {
 const getReportById = async (req, res) => {
   const { reportId } = req.params;
   try {
-    1;
     const report = await Report.findById(reportId);
     if (!report) {
       return res.status(404).json({ message: "report not found" });

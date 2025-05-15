@@ -10,6 +10,7 @@ const authRoutes = require("./routes/authRoutes");
 const User = require("./models/User");
 const bcrypt = require("bcrypt");
 const app = express();
+const cors = require("cors");
 require("dotenv").config();
 const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || "admin@example.com";
 const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || "admin123";
@@ -34,17 +35,17 @@ const swaggerOptions = {
         BearerAuth: {
           type: "http",
           scheme: "bearer",
-          bearerFormat: "JWT", // Optional, but helps indicate the token format
+          bearerFormat: "JWT",
         },
       },
     },
     security: [
       {
-        BearerAuth: [], // Apply BearerAuth globally to all endpoints
+        BearerAuth: [],
       },
     ],
   },
-  apis: ["./routes/*.js"], // Path to your route files
+  apis: ["./routes/*.js"],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
@@ -87,6 +88,7 @@ connectDB().then(() => {
   });
 });
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/api", propertyRoutes);
