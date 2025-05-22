@@ -88,7 +88,7 @@ router.post("/report", upload.single("media"), createReport);
 router.get(
   "/reports",
   authenticate,
-  authorizedRoles("supervisor"),
+  authorizedRoles("admin", "supervisor"),
   getAllReports
 );
 
@@ -97,7 +97,7 @@ router.get(
  * /api/report/{reportId}:
  *   get:
  *     summary: Get a specific report by ID
- *     description: Supervisors can fetch a specific report by its ID.
+ *     description: Admins and supervisors can fetch a specific report by its ID.
  *     tags:
  *       - Reports
  *     security:
@@ -140,7 +140,7 @@ router.get(
 router.get(
   "/report/:reportId",
   authenticate,
-  authorizedRoles("supervisor"),
+  authorizedRoles("admin", "supervisor"),
   getReportById
 );
 
@@ -149,7 +149,7 @@ router.get(
  * /api/report/{reportId}:
  *   delete:
  *     summary: Delete a report
- *     description: Supervisors can delete a report by its ID.
+ *     description: Admins and supervisors can delete a report by its ID.
  *     tags:
  *       - Reports
  *     security:
@@ -176,7 +176,7 @@ router.get(
 router.delete(
   "/report/:reportId",
   authenticate,
-  authorizedRoles("supervisor"),
+  authorizedRoles("admin", "supervisor"),
   deleteReport
 );
 module.exports = router;

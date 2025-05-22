@@ -16,7 +16,7 @@ const authenticate = require("../middlewares/authMiddleware");
  * /api/tasks/assign:
  *   post:
  *     summary: Assign a task to an engineer
- *     description: Only a supervisor can assign a task to an engineer.
+ *     description: Only admins and supervisors can assign a task to an engineer.
  *     tags:
  *       - Tasks
  *     requestBody:
@@ -51,7 +51,7 @@ const authenticate = require("../middlewares/authMiddleware");
 router.post(
   "/tasks/assign",
   authenticate,
-  authorizedRoles("supervisor"),
+  authorizedRoles("admin", "supervisor"),
   assignTask
 );
 
@@ -60,7 +60,7 @@ router.post(
  * /api/tasks/{id}:
  *   patch:
  *     summary: Update the status of a task
- *     description: Only an engineer can update the status of a task they are assigned to.
+ *     description: Only admins and engineers can update the status of a task they are assigned to.
  *     tags:
  *       - Tasks
  *     parameters:
@@ -94,7 +94,7 @@ router.post(
 router.patch(
   "/tasks/:id",
   authenticate,
-  authorizedRoles("engineer"),
+  authorizedRoles("admin", "engineer"),
   updateTaskStatus
 );
 
@@ -137,7 +137,7 @@ router.get(
  * /api/tasks/{id}/task:
  *   get:
  *     summary: Get a specific task by ID
- *     description: Get detailed information about a task by its ID.
+ *     description: Admin or supervisor can get detailed information about a task by its ID.
  *     tags:
  *       - Tasks
  *     parameters:
@@ -166,7 +166,7 @@ router.get(
  * /api/tasks/{id}/comment:
  *   post:
  *     summary: Add a comment to a task
- *     description: Both engineers and supervisors can add comments to tasks.
+ *     description: Admins, engineers and supervisors can add comments to tasks.
  *     tags:
  *       - Tasks
  *     parameters:
@@ -202,7 +202,7 @@ router.get(
 router.post(
   "/tasks/:id/comment",
   authenticate,
-  authorizedRoles("supervisor", "engineer"),
+  authorizedRoles("admin", "supervisor", "engineer"),
   addTaskComment
 );
 
@@ -211,7 +211,7 @@ router.post(
  * /api/tasks/{id}:
  *   delete:
  *     summary: Delete a task
- *     description: Supervisors can delete a task by its ID.
+ *     description: Supervisors and admins can delete a task by its ID.
  *     tags:
  *       - Tasks
  *     security:
@@ -236,7 +236,7 @@ router.post(
 router.delete(
   "/tasks/:id",
   authenticate,
-  authorizedRoles("supervisor"),
+  authorizedRoles("admin", "supervisor"),
   deleteTask
 );
 module.exports = router;
