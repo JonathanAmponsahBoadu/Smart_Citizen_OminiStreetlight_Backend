@@ -29,6 +29,7 @@ const createProperty = async (req, res) => {
         coordinates: { lat: lat, lng: lng },
       },
       state: state,
+      createdBy: req.user ? req.user._id : undefined,
     });
 
     await newProperty.save();
@@ -41,7 +42,7 @@ const createProperty = async (req, res) => {
     console.error(`Error creating property: ${err}`);
 
     if (!res.headersSent) {
-      return res.status(500).json({ message: "Failed to create property" }); // Stop execution on error
+      return res.status(500).json({ message: "Failed to create property" });
     }
   }
 };

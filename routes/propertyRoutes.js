@@ -121,7 +121,9 @@ router.get(
  *             required:
  *               - propertyId
  *               - type
- *               - location
+ *               - address
+ *               - lat
+ *               - lng
  *               - state
  *             properties:
  *               propertyId:
@@ -129,18 +131,12 @@ router.get(
  *               type:
  *                 type: string
  *                 enum: [streetlight, road, pipe, bridge]
- *               location:
- *                 type: object
- *                 properties:
- *                   address:
- *                     type: string
- *                   coordinates:
- *                     type: object
- *                     properties:
- *                       lat:
- *                         type: number
- *                       lng:
- *                         type: number
+ *               address:
+ *                 type: string
+ *               lat:
+ *                 type: number
+ *               lng:
+ *                 type: number
  *               state:
  *                 type: string
  *                 enum: [working, damaged, under_repair, fixed, pending]
