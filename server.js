@@ -29,6 +29,9 @@ const swaggerOptions = {
       {
         url: process.env.URL,
       },
+      {
+        url: `http://localhost:${process.env.PORT}`,
+      },
     ],
     components: {
       securitySchemes: {
