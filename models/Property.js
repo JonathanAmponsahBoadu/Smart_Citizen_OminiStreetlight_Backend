@@ -5,10 +5,10 @@ const propertySchema = new mongoose.Schema(
     propertyId: { type: String, required: true, unique: true },
     type: { type: String, required: true },
     location: {
-      address: { type: String },
+      address: { type: String, required: true },
       coordinates: {
-        lat: { type: Number },
-        lng: { type: Number },
+        lat: { type: Number, required: true },
+        lng: { type: Number, required: true },
       },
     },
     state: { type: String, required: true },

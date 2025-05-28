@@ -152,7 +152,6 @@ router.get(
  *       500:
  *         description: Internal Server Error.
  */
-
 router.post(
   "/properties",
   authenticate,
