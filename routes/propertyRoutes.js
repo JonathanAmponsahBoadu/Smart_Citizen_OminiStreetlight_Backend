@@ -119,15 +119,12 @@ router.get(
  *           schema:
  *             type: object
  *             required:
- *               - propertyId
  *               - type
  *               - address
  *               - lat
  *               - lng
  *               - state
  *             properties:
- *               propertyId:
- *                 type: string
  *               type:
  *                 type: string
  *                 enum: [streetlight, road, pipe, bridge]

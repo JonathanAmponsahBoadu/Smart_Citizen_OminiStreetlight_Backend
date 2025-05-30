@@ -14,12 +14,15 @@ const getAllProperties = async (req, res) => {
 };
 
 const createProperty = async (req, res) => {
-  const { propertyId, type, address, lat, lng, state } = req.body;
+  const { type, address, lat, lng, state } = req.body;
   try {
-    const existingProperty = await Property.findOne({ propertyId });
-    if (existingProperty) {
-      return res.status(409).json({ message: "Property already exists" });
-    }
+    const generatePropertyId = async () => {
+      const count = await Property.countDocuments();
+      const num = (count + 1).toString().padStart(4, "0");
+      return `st-${num}`;
+    };
+
+    const propertyId = await generatePropertyId();
 
     const newProperty = new Property({
       propertyId: propertyId,
