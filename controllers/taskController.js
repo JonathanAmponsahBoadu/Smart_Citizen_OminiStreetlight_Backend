@@ -4,7 +4,7 @@ const Property = require("../models/Property");
 
 const assignTask = async (req, res) => {
   try {
-    const { reportId, propertyId, engineerId, assignedby } = req.body;
+    const { reportId, propertyId, engineerId, assignedBy } = req.body;
 
     const report = await Report.findById(reportId);
     const property = await Property.findById(propertyId);
@@ -17,14 +17,14 @@ const assignTask = async (req, res) => {
       report: reportId,
       property: propertyId,
       assignedTo: engineerId,
-      assignedBy: assignedby,
+      assignedBy: assignedBy,
     });
 
     await task.save();
 
     res.status(200).json({
       message: "Task assigned successfully",
-      taskId: task._id,
+      task: task,
     });
   } catch (err) {
     console.error("Error assigning task:", err);
