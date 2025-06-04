@@ -2,7 +2,11 @@ const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema({
   report: { type: mongoose.Schema.Types.ObjectId, ref: "Report" },
-  property: { type: mongoose.Schema.Types.ObjectId, ref: "Property" },
+  property: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Property",
+    required: true,
+  },
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   assignedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   status: {

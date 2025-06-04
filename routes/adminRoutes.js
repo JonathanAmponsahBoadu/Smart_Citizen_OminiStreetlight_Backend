@@ -166,7 +166,12 @@ Router.get(
  *       500:
  *         description: Internal Server Error.
  */
-Router.get("/users", authenticate, authorizedRoles("admin"), getAllAccounts);
+Router.get(
+  "/users",
+  authenticate,
+  authorizedRoles("admin", "supervisor"),
+  getAllAccounts
+);
 
 /**
  * @swagger

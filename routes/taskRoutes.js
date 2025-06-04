@@ -128,7 +128,7 @@ router.patch(
 router.get(
   "/tasks",
   authenticate,
-  authorizedRoles("admin", "supervisor"),
+  authorizedRoles("admin", "supervisor", "engineer"),
   getAllTasks
 );
 
@@ -157,7 +157,7 @@ router.get(
 router.get(
   "/tasks/:id/task",
   authenticate,
-  authorizedRoles("admin", "supervisor"),
+  authorizedRoles("admin", "supervisor", "engineer"),
   getTaskById
 );
 
