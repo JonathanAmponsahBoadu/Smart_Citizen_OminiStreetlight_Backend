@@ -17,9 +17,13 @@ const createProperty = async (req, res) => {
   const { type, address, lat, lng, state } = req.body;
   try {
     const generatePropertyId = async () => {
-      const count = await Property.countDocuments();
-      const num = (count + 1).toString().padStart(4, "0");
-      return `st-${num}`;
+      const lastProperty = await Property.findOne({ propertyId: /^st-\d{4}$/ })
+        .sort({ propertyId: -1 })
+        .lean();
+
+      const match = lastProperty?.propertyId.match(/^st-(\d{4})$/);
+      const nextNum = match ? parseInt(match[1], 10) + 1 : 1;
+      return `st-${String(nextNum).padStart(4, "0")}`;
     };
 
     const propertyId = await generatePropertyId();
