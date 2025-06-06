@@ -158,7 +158,7 @@ router.post(
 
 /**
  * @swagger
- * /api/properties/{propertyId}:
+ * /api/properties/{id}:
  *   patch:
  *     summary: Update the status of a property
  *     description: Admins and supervisors can update the status of a property.
@@ -166,7 +166,7 @@ router.post(
  *       - Properties
  *     parameters:
  *       - in: path
- *         name: propertyId
+ *         name: id
  *         required: true
  *         description: The ID of the property to update.
  *         schema:
@@ -192,7 +192,7 @@ router.post(
  *         description: Internal Server Error.
  */
 router.patch(
-  "/properties/:propertyId",
+  "/properties/:id",
   authenticate,
   authorizedRoles("admin", "supervisor"),
   updatePropertyStatus
@@ -200,15 +200,15 @@ router.patch(
 
 /**
  * @swagger
- * /api/properties/{propertyId}:
+ * /api/properties/{id}:
  *   delete:
  *     summary: Delete a property
- *     description: Admins can delete a property by its propertyId.
+ *     description: Admins can delete a property by its ID.
  *     tags:
  *       - Properties
  *     parameters:
  *       - in: path
- *         name: propertyId
+ *         name: id
  *         required: true
  *         description: The ID of the property to delete.
  *         type: string
@@ -221,7 +221,7 @@ router.patch(
  *         description: Internal Server Error.
  */
 router.delete(
-  "/properties/:propertyId",
+  "/properties/:id",
   authenticate,
   authorizedRoles("admin"),
   deleteProperty

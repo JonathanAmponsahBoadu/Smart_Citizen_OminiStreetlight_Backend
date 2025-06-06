@@ -51,11 +51,11 @@ const createProperty = async (req, res) => {
 };
 
 const deleteProperty = async (req, res) => {
-  const { propertyId } = req.params;
+  const { id } = req.params;
   try {
-    const deletedProperty = await Property.findOneAndDelete({ propertyId });
-    if (!propertyId) {
-      return res.status(400).json({ message: "Property ID is required" });
+    const deletedProperty = await Property.findByIdAndDelete(id);
+    if (!deletedProperty) {
+      return res.status(404).json({ message: "Property not found" });
     }
 
     return res.status(200).json({
@@ -68,7 +68,7 @@ const deleteProperty = async (req, res) => {
 };
 
 const updatePropertyStatus = async (req, res) => {
-  const { propertyId } = req.params;
+  const { id } = req.params;
   const { state } = req.body;
   try {
     const validStates = [
@@ -82,8 +82,8 @@ const updatePropertyStatus = async (req, res) => {
       return res.status(400).json({ message: "Invalid state value" });
     }
 
-    const updatedProperty = await Property.findOneAndUpdate(
-      { propertyId },
+    const updatedProperty = await Property.findByIdAndUpdate(
+      id,
       { state },
       { new: true }
     );
