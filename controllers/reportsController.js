@@ -62,9 +62,9 @@ const getAllReports = async (req, res) => {
 };
 
 const getReportById = async (req, res) => {
-  const { reportId } = req.params;
+  const { id } = req.params;
   try {
-    const report = await Report.findById(reportId);
+    const report = await Report.findById(id);
     if (!report) {
       return res.status(404).json({ message: "report not found" });
     }
@@ -76,15 +76,15 @@ const getReportById = async (req, res) => {
 };
 
 const deleteReport = async (req, res) => {
-  const { reportId } = req.params;
+  const { id } = req.params;
   try {
-    const deletedReport = await Report.findOneAndDelete(reportId);
+    const deletedReport = await Report.findByIdAndDelete(id);
     if (!deletedReport) {
       return res.status(404).json({ message: "report not found" });
     }
     return res.status(200).json({ message: "report deleted successfully" });
   } catch (err) {
-    return res;
+    return res.status(500).json({ message: "Error deleting report" });
   }
 };
 

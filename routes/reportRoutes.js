@@ -94,7 +94,7 @@ router.get(
 
 /**
  * @swagger
- * /api/report/{reportId}:
+ * /api/report/{id}:
  *   get:
  *     summary: Get a specific report by ID
  *     description: Admins and supervisors can fetch a specific report by its ID.
@@ -104,7 +104,7 @@ router.get(
  *       - BearerAuth: [] # Requires authentication
  *     parameters:
  *       - in: path
- *         name: reportId
+ *         name: id
  *         required: true
  *         description: The ID of the report to fetch.
  *         schema:
@@ -138,7 +138,7 @@ router.get(
  *         description: Internal Server Error.
  */
 router.get(
-  "/report/:reportId",
+  "/report/:id",
   authenticate,
   authorizedRoles("admin", "supervisor"),
   getReportById
@@ -146,7 +146,7 @@ router.get(
 
 /**
  * @swagger
- * /api/report/{reportId}:
+ * /api/report/{id}:
  *   delete:
  *     summary: Delete a report
  *     description: Admins and supervisors can delete a report by its ID.
@@ -156,7 +156,7 @@ router.get(
  *       - BearerAuth: [] # Requires authentication
  *     parameters:
  *       - in: path
- *         name: reportId
+ *         name: id
  *         required: true
  *         description: The ID of the report to delete.
  *         schema:
@@ -174,7 +174,7 @@ router.get(
  *         description: Internal Server Error.
  */
 router.delete(
-  "/report/:reportId",
+  "/report/:id",
   authenticate,
   authorizedRoles("admin", "supervisor"),
   deleteReport
