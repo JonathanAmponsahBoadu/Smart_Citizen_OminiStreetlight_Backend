@@ -54,15 +54,16 @@ const getAccount = async (req, res) => {
 
 const deleteAccount = async (req, res) => {
   const { email } = req.body;
+  const defaultAdminEmail = "admin@example.com";
   try {
     const deletedAccount = await User.findOne({ email });
     if (!deletedAccount) {
       return res.status(404).json({ message: "Account not found" });
     }
-    if (deletedAccount.role === "admin") {
+    if (deletedAccount.email === defaultAdminEmail) {
       return res
         .status(401)
-        .json({ message: "You cannot delete an admin account" });
+        .json({ message: "You cannot delete the default admin account" });
     }
 
     await deletedAccount.deleteOne();
