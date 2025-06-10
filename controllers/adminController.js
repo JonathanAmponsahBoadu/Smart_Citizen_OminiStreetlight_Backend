@@ -62,8 +62,16 @@ const deleteAccount = async (req, res) => {
     }
     if (deletedAccount.email === defaultAdminEmail) {
       return res
-        .status(401)
+        .status(403)
         .json({ message: "You cannot delete the default admin account" });
+    }
+    if (
+      deletedAccount.role === "admin" &&
+      (!req.user || req.user.email !== defaultAdminEmail)
+    ) {
+      return res
+        .status(401)
+        .json({ message: "You cannot delete an admin account" });
     }
 
     await deletedAccount.deleteOne();
