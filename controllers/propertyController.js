@@ -17,13 +17,37 @@ const createProperty = async (req, res) => {
   const { type, address, lat, lng, state } = req.body;
   try {
     const generatePropertyId = async () => {
-      const lastProperty = await Property.findOne({ propertyId: /^st-\d{4}$/ })
-        .sort({ propertyId: -1 })
-        .lean();
+      if (type == "streetlight") {
+        const lastProperty = await Property.findOne({
+          propertyId: /^st-\d{4}$/,
+        })
+          .sort({ propertyId: -1 })
+          .lean();
 
-      const match = lastProperty?.propertyId.match(/^st-(\d{4})$/);
-      const nextNum = match ? parseInt(match[1], 10) + 1 : 1;
-      return `st-${String(nextNum).padStart(4, "0")}`;
+        const match = lastProperty?.propertyId.match(/^st-(\d{4})$/);
+        const nextNum = match ? parseInt(match[1], 10) + 1 : 1;
+        return `st-${String(nextNum).padStart(4, "0")}`;
+      } else if (type == "bench") {
+        const lastProperty = await Property.findOne({
+          propertyId: /^bnch-\d{4}$/,
+        })
+          .sort({ propertyId: -1 })
+          .lean();
+        const match = lastProperty?.propertyId.match(/^bnch-(\d{4})$/);
+        const nextNum = match ? parseInt(match[1], 10) + 1 : 1;
+        return `bnch-${String(nextNum).padStart(4, "0")}`;
+      } else if (type == "garbage-bin") {
+        const lastProperty = await Property.findOne({
+          propertyId: /^g-bin-\d{4}$/,
+        })
+          .sort({ propertyId: -1 })
+          .lean();
+        const match = lastProperty?.propertyId.match(/^g-bin-(\d{4})$/);
+        const nextNum = match ? parseInt(match[1], 10) + 1 : 1;
+        return `g-bin-${String(nextNum).padStart(4, "0")}`;
+      } else {
+        throw new Error("Invalid property type");
+      }
     };
 
     const propertyId = await generatePropertyId();
