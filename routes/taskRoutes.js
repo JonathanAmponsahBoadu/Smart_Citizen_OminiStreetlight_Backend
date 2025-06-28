@@ -6,6 +6,9 @@ const {
   getAllTasks,
   getTaskById,
   addTaskComment,
+  deleteTaskComment,
+  getTaskComments,
+  getAllComments,
   deleteTask,
 } = require("../controllers/taskController");
 const authorizedRoles = require("../middlewares/authorizedRoles");
@@ -163,6 +166,79 @@ router.get(
 
 /**
  * @swagger
+ * /api/tasks/comments:
+ *   get:
+ *     summary: Get all comments across all tasks
+ *     description: Retrieve all comments from all tasks in the system.
+ *     tags:
+ *       - Tasks
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all comments.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 comments:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Internal server error.
+ */
+router.get(
+  "/tasks/comments",
+  authenticate,
+  authorizedRoles("admin", "supervisor", "engineer"),
+  getAllComments
+);
+
+/**
+ * @swagger
+ * /api/tasks/{id}/comments:
+ *   get:
+ *     summary: Get all comments for a specific task
+ *     description: Retrieve all comments for a given task by its ID.
+ *     tags:
+ *       - Tasks
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the task.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of comments for the task.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 comments:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       404:
+ *         description: Task not found.
+ *       500:
+ *         description: Internal server error.
+ */
+router.get(
+  "/tasks/:id/comments",
+  authenticate,
+  authorizedRoles("admin", "supervisor", "engineer"),
+  getTaskComments
+);
+
+/**
+ * @swagger
  * /api/tasks/{id}/comment:
  *   post:
  *     summary: Add a comment to a task
@@ -204,6 +280,46 @@ router.post(
   authenticate,
   authorizedRoles("admin", "supervisor", "engineer"),
   addTaskComment
+);
+
+/**
+ * @swagger
+ * /api/tasks/{id}/comment/{commentId}:
+ *   delete:
+ *     summary: Delete a comment from a task
+ *     description: Admins, supervisors, and engineers can delete a specific comment from a task.
+ *     tags:
+ *       - Tasks
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the task.
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: commentId
+ *         required: true
+ *         description: The ID of the comment to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Comment deleted successfully.
+ *       404:
+ *         description: Task or comment not found.
+ *       401:
+ *         description: Unauthorized.
+ *       500:
+ *         description: Internal Server Error.
+ */
+router.delete(
+  "/tasks/:id/comment/:commentId",
+  authenticate,
+  authorizedRoles("admin", "supervisor", "engineer"),
+  deleteTaskComment
 );
 
 /**

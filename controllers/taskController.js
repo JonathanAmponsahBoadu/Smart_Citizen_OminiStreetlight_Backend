@@ -118,7 +118,7 @@ const addTaskComment = async (req, res) => {
     }
 
     task.comments.push({
-      text,
+      body: text,
       createdBy: userId,
       createdAt: new Date(),
     });
@@ -129,6 +129,65 @@ const addTaskComment = async (req, res) => {
   } catch (err) {
     console.error("Error adding comment:", err);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const getTaskComments = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id).populate(
+      "comments.createdBy",
+      "fullName email"
+    );
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    return res.status(200).json({ comments: task.comments });
+  } catch (err) {
+    console.error("Error fetching task comments:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getAllComments = async (req, res) => {
+  try {
+    const tasks = await Task.find().populate(
+      "comments.createdBy",
+      "fullName email"
+    );
+    const allComments = tasks.flatMap((task) =>
+      task.comments.map((comment) => ({
+        ...comment.toObject(),
+        taskId: task._id,
+      }))
+    );
+    return res.status(200).json({ comments: allComments });
+  } catch (err) {
+    console.error("Error fetching all comments:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const deleteTaskComment = async (req, res) => {
+  const { id, commentId } = req.params;
+  try {
+    const task = await Task.findById(id); // <-- Add await here
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    const commentIndex = task.comments.findIndex(
+      (c) => c._id.toString() === commentId
+    );
+    if (commentIndex === -1) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+    task.comments.splice(commentIndex, 1);
+    await task.save();
+    return res
+      .status(200)
+      .json({ message: "Comment deleted successfully", task });
+  } catch (err) {
+    console.error("Error deleting comment:", err);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -152,5 +211,8 @@ module.exports = {
   getAllTasks,
   getTaskById,
   addTaskComment,
+  getTaskComments,
+  getAllComments,
+  deleteTaskComment,
   deleteTask,
 };

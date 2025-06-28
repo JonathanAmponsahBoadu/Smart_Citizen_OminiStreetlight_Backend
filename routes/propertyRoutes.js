@@ -32,7 +32,7 @@ const authenticate = require("../middlewares/authMiddleware");
 router.get(
   "/properties",
   authenticate,
-  authorizedRoles("admin", "supervisor"),
+  authorizedRoles("admin", "supervisor", "engineer"),
   getAllProperties
 );
 
@@ -100,7 +100,7 @@ router.get(
 router.get(
   "/properties/:id",
   authenticate,
-  authorizedRoles("admin", "supervisor"),
+  authorizedRoles("admin", "supervisor", "engineer"),
   getPropertyById
 );
 
@@ -194,7 +194,7 @@ router.post(
 router.patch(
   "/properties/:id",
   authenticate,
-  authorizedRoles("admin", "supervisor"),
+  authorizedRoles("admin", "supervisor", "engineer"),
   updatePropertyStatus
 );
 
