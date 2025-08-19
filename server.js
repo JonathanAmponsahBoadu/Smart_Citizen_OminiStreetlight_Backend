@@ -16,7 +16,18 @@ const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || "admin@example.com";
 const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || "admin123";
 
 const port = process.env.PORT || 5000;
-app.use(cors());
+
+const allowedOrigins = ["http://localhost:5173"];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 const swaggerOptions = {
