@@ -16,6 +16,8 @@ const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || "admin@example.com";
 const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || "admin123";
 
 const port = process.env.PORT || 5000;
+app.use(cors());
+app.use(express.json());
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -84,18 +86,15 @@ const createDefaultAdmin = async () => {
   }
 };
 
+app.use("/api", propertyRoutes);
+app.use("/api", adminRoutes);
+app.use("/api", reportRoutes);
+app.use("/api", taskRoutes);
+app.use("/api", authRoutes);
+
 connectDB().then(() => {
   createDefaultAdmin();
   app.listen(port, () => {
     console.log(`Running on http://localhost:${port}`);
   });
 });
-
-app.use(cors());
-app.use(express.json());
-
-app.use("/api", propertyRoutes);
-app.use("/api", adminRoutes);
-app.use("/api", reportRoutes);
-app.use("/api", taskRoutes);
-app.use("/api", authRoutes);
