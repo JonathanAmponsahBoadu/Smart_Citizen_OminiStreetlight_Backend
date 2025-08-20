@@ -17,7 +17,7 @@ const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || "admin123";
 
 const port = process.env.PORT || 5000;
 
-const allowedOrigins = ["http://localhost:5173/"];
+const allowedOrigins = ["http://localhost:5173"];
 
 app.use(
   cors({
