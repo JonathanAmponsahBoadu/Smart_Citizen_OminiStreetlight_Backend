@@ -20,6 +20,7 @@ const port = process.env.PORT || 5000;
 const allowedOrigins = [
   "http://localhost:5173",
   "https://smart-citizen-oministreetlight-backend.onrender.com",
+  "http://localhost:5000",
 ];
 
 app.use(
