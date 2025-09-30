@@ -169,7 +169,7 @@ Router.get(
 Router.get(
   "/users",
   authenticate,
-  authorizedRoles("admin", "supervisor"),
+  authorizedRoles("admin", "engineer", "supervisor"),
   getAllAccounts
 );
 
