@@ -97,7 +97,7 @@ router.post(
 router.patch(
   "/tasks/:id",
   authenticate,
-  authorizedRoles("admin", "engineer"),
+  authorizedRoles("admin", "supervisor", "engineer"),
   updateTaskStatus
 );
 
