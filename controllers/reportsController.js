@@ -3,17 +3,14 @@ const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const fs = require("fs");
 const Report = require("../models/Report");
+const cloudinary = require("../Lib/cloud");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../uploads");
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "_" + file.originalname);
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "uploads",
+    alllowed_formats: ["png", "jpeg", "jpeg"],
   },
 });
 
@@ -27,6 +24,12 @@ const createReport = async (req, res) => {
     let media = null;
     if (req.file) {
       media = req.file.path;
+    }
+    if (!fs.existsSync) {
+      console.log("Local upload failed", media);
+      return res
+        .status(500)
+        .json({ message: "Upload failed: temp file missing" });
     }
 
     const newReport = new Report({
