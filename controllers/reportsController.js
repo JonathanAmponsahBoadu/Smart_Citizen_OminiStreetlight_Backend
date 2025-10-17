@@ -25,12 +25,6 @@ const createReport = async (req, res) => {
     if (req.file) {
       media = req.file.path;
     }
-    if (!fs.existsSync) {
-      console.log("Local upload failed", media);
-      return res
-        .status(500)
-        .json({ message: "Upload failed: temp file missing" });
-    }
 
     const newReport = new Report({
       propertyId,
