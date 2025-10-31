@@ -39,9 +39,13 @@ const createAccount = async (req, res) => {
 };
 
 const getAccount = async (req, res) => {
-  const { id } = req.params;
+  // Route uses :userId in params
+  const { userId } = req.params;
+  if (!userId)
+    return res.status(400).json({ message: "userId parameter is required" });
+
   try {
-    const Account = await User.findOne(id);
+    const Account = await User.findById(userId);
     if (!Account) {
       return res.status(404).json({ message: "Account not found" });
     }
