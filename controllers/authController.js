@@ -59,7 +59,7 @@ const requestPasswordReset = async (req, res) => {
     user.passwordResetExpires = Date.now() + 3600 * 1000;
     await user.save();
 
-    const base = clientUrl || process.env.CLIENT_URL || "http://localhost:3000";
+    const base = clientUrl || process.env.CLIENT_URL || "http://localhost:5173";
     const resetLink = `${base.replace(
       /\/$/,
       ""
