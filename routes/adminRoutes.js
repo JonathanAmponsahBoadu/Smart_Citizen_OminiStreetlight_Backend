@@ -114,7 +114,7 @@ Router.post("/users", authenticate, authorizedRoles("admin"), createAccount);
 Router.get(
   "/users/:userId",
   authenticate,
-  authorizedRoles("admin"),
+  authorizedRoles("admin", "supervisor", "engineer"),
   getAccount
 );
 
